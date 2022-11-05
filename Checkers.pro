@@ -17,4 +17,6 @@ HEADERS += \
     Game.h \
     main.h \
     BackTracking.h \
-
+    Square.h \
+    Check.h \
+    MovePiece.h

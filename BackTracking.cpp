@@ -95,7 +95,7 @@ std::pair<int, std::pair<char, char>> findBestJumpMoveAI(const std::map<std::pai
         }
     }
 
-    ofstream text;
+    std::ofstream text;
 
 
     if(val == 0){
