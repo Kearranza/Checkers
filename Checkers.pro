@@ -10,9 +10,11 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += \
     Game.cpp \
     main.cpp \
+    BackTracking.cpp \
 
 
 HEADERS += \
     Game.h \
     main.h \
+    BackTracking.h \
 
