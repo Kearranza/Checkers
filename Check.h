@@ -128,7 +128,7 @@ private:
                 QPointF(x+28.0, y+30.0),
                 QPointF(x+16.0, y+15.0)
             };
-            painter->setBrush(Qt::darkYellow);
+            painter->setBrush(QColor::fromRgb(125,75,150));
             painter->drawPolygon(kingPoints, 7);
         }
         painter->setBrush(Qt::black);

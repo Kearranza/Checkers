@@ -190,7 +190,6 @@ int main(int argc, char *argv[])
     view.setViewportUpdateMode(QGraphicsView::FullViewportUpdate);
     view.setBackgroundBrush(QColor(255,255,255));
     view.setWindowTitle("Checkers");
-    view.showMaximized();
 
     QTimer *timer = new QTimer;
     QObject::connect(timer, &QTimer::timeout, [&scene](){

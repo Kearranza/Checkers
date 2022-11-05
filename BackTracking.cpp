@@ -3,7 +3,9 @@
 #include "Game.h"
 #include <QtGlobal>
 #include <fstream>
+#include <string>
 
+int turnCounter=1;
 std::pair<int, std::pair<char, char>> findBestJumpMoveAI(const std::map<std::pair<char, char>, char> &gameBoard,
                                                          const std::pair<char, char> &from){
 
@@ -35,7 +37,6 @@ std::pair<int, std::pair<char, char>> findBestJumpMoveAI(const std::map<std::pai
 
     Node current (from);//Create a new node
     possibilities.insert(from);//Insert a square in possibilities
-
     int jumpedPieceAmount = 0;
     std::map<int, std::vector<std::pair<char, char>>> valueOfSquare{}; //Stores squares based on how many enemies they have jumped over.
     valueOfSquare[0].push_back(from);
@@ -95,7 +96,6 @@ std::pair<int, std::pair<char, char>> findBestJumpMoveAI(const std::map<std::pai
         }
     }
 
-    std::ofstream text;
 
 
     if(val == 0){
@@ -157,6 +157,7 @@ std::pair<char, char> findSingleSquareMoveAI(const std::map<std::pair<char, char
 std::pair<std::pair<char, char>, std::pair<char, char>> getMoveAI(std::map<std::pair<char, char>, char> & gameBoard,
                int & playerTurn)
 {
+
     //find all the pieces available to move
     std::vector<std::pair<char, char>> pieceVec;
     for (auto it = gameBoard.begin(); it != gameBoard.end(); ++it){
@@ -172,22 +173,57 @@ std::pair<std::pair<char, char>, std::pair<char, char>> getMoveAI(std::map<std::
     //Generates a vector Best Move, that contains the movement to make
     std::pair<std::pair<char, char>, std::pair<char, char>> bestMove = std::make_pair(std::make_pair('z', 'z'), std::make_pair('z', 'z'));
     int val = 0;
+    if(turnCounter==1){
+        try{
+                remove("RegistroJump.txt");
+            }
+            catch (bool){
+
+            }
+    }
+    std::fstream text;
+    text.open("RegistroJump.txt",std::ios::app);
+    int first;
+    int i=0;
     std::vector<std::pair<std::pair<char, char>, std::pair<char, char>>> possibleMoves {};
-    for(auto it = pieceVec.begin(); it != pieceVec.end(); ++it){//Search in all the available pieces to move
+    text<<"Calculos turno: "<<turnCounter<<"\n";
+    for(auto it = pieceVec.begin(); it != pieceVec.end(); ++it, i++){//Search in all the available pieces to move
+        if (i++>possibleMoves.size()){
+            i=0;
+        }
         auto temp = findBestJumpMoveAI(gameBoard, *it);//Calls findBestJumpMoveAI
+        first=temp.first;
+
+
         if(temp.first > val){ //Sees if the movement is better than the past one
             std::vector<std::pair<std::pair<char, char>, std::pair<char, char>>> newPossibleMoves;
             newPossibleMoves.push_back(std::make_pair(*it, temp.second));
             val = temp.first;
             possibleMoves = newPossibleMoves;
+            while (i<possibleMoves.size())
+            {
+                text<< first;
+                text<<" ";
+                text<<possibleMoves[i].first.first<<possibleMoves[i].first.second<<"--->"<<possibleMoves[i].second.first<<possibleMoves[i].second.second<<"\n";
+                i++;
+             };
         }else if (temp.first == val){
             possibleMoves.push_back(std::make_pair(*it, temp.second));
+            while (i<possibleMoves.size())
+            {
+                text<< first;
+                text<<" ";
+                text<<possibleMoves[i].first.first<<possibleMoves[i].first.second<<"---->"<<possibleMoves[i].second.first<<possibleMoves[i].second.second<<"\n";
+                i++;
+             };
         }
     }
+
 
     if(val>0){//Assign a possible move from the best possibleMoves vector list
         int randomIndex = rand() % possibleMoves.size();
         bestMove = possibleMoves.at(randomIndex);
+        text<<"Best play to win material -->"<<bestMove.first.first<<bestMove.first.second<<"->"<<bestMove.second.first<<bestMove.second.second<<"\n";
     }
 
     else { //Don't bother looking for a single square if a jump square was found
@@ -196,6 +232,7 @@ std::pair<std::pair<char, char>, std::pair<char, char>> getMoveAI(std::map<std::
             std::pair<char, char> temp = findSingleSquareMoveAI(gameBoard, *it);
             if (temp != std::make_pair('z', 'z')){
                 possibleSingleMoves.push_back(std::make_pair(*it, temp));
+                text<<"There is not a best move so randomly selesct >>"<<temp.first<<temp.second<<"\n";
             }
         }
 
@@ -207,6 +244,7 @@ std::pair<std::pair<char, char>, std::pair<char, char>> getMoveAI(std::map<std::
         std::cout<<"Programmer error: AI has no valid moves."<<std::endl;
         throw "Programmer error: AI has no valid moves.";
     }
-
+    turnCounter++;
+    text.close();
     return bestMove;
 }
