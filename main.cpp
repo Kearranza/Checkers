@@ -11,6 +11,7 @@
 #include "Check.h"
 #include "BackTracking.h"
 #include <map>
+#include "Arduino.h""
 
 namespace CV{
     std::map<std::pair<char, char>, char> gameBoard;
@@ -171,6 +172,8 @@ void redrawBoard(std::pair<char, char> from, std::pair<char, char> to, QGraphics
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
+    Arduino::create();
+
 
     int width = 1920;
     int height = 1080;

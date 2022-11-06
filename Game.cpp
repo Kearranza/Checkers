@@ -2,6 +2,7 @@
 #define GAME
 
 #include "Game.h"
+#include "Arduino.h""
 
 void emptyBoard(std::map<std::pair<char, char>, char> & gameBoard){
     std::map<std::pair<char, char>, char> temp;
@@ -426,6 +427,7 @@ bool singleSquareMove(const std::pair<char, char> & from,
 //Overwrites any tokens on the specified square. Used for deleting "jumped over" tokens.
 void removeSquare(const std::pair<char, char> & square, std::map<std::pair<char, char>, char> & gameBoard) {
     gameBoard.at(square) = pieces[Empty];
+    Arduino::onLed();
 }
 //Moves the piece without checking if the move is legal.
 void movePiece(std::pair<char, char> &from,

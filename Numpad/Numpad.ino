@@ -3,6 +3,7 @@
 const byte ROWS = 4; //four rows
 const byte COLS = 3; //three columns
 const int ledPin = 9;
+const int ledPin2 = 10;
 
 char keys[ROWS][COLS] = {
   {'1','2','3'},
@@ -18,6 +19,8 @@ Keypad keypad = Keypad( makeKeymap(keys), rowPins, colPins, ROWS, COLS );
 
 void setup(){
   pinMode(ledPin, OUTPUT);
+  pinMode(ledPin2, OUTPUT);
+  analogWrite(ledPin, 5);
   Serial.begin(9600);
 }
   
@@ -27,9 +30,16 @@ void loop(){
   if (key){
     Serial.write(key);
     Serial.println(key);
-
-    digitalWrite(ledPin, HIGH);
+    digitalWrite(ledPin2,HIGH);
     delay(100);
-    digitalWrite(ledPin, LOW);
+    digitalWrite(ledPin2,LOW);
+
+  }
+  if (Serial.available()){
+    char led_specifier = Serial.read();
+    int led_brightness = Serial.parseInt();
+    analogWrite(ledPin, led_brightness);
+    delay(200);
+    analogWrite(ledPin,0);
   }
 }
